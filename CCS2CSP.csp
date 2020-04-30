@@ -1,0 +1,38 @@
+{-
+
+ We want to translate CCS  a.P | a'.Q | a'.R
+ into CSP   (a+a12+a13)->P' || (a+a12)-> Q' || (a+a13)-> R'
+
+ In CCS:
+   a.P | a'.Q | a'.R
+    = a.(P | a'.Q | a'.R)
+      +
+      a'.(a.P | Q | a'.R)
+      +
+      a'.(a.P | a'.Q | R)
+      +
+      t.( P | Q | a'.R)
+      +
+      t.( P | a'.Q | R)
+
+Plan:  ccs2csp(a.P | a'.Q | a'.R)
+       = ccs2csp(a.0 | a'.0 | a'.0) ; ccs2csp(P|Q\R) -- how do we pass values?
+
+What if a process above, (a.P, a'.Q, a'.R) is replaced by 0 ?
+
+
+-}
+
+channel a, a12, a13
+
+syncset = {a12, a13}
+
+P = (a -> SKIP) [] (a12 -> SKIP) [] (a13 -> SKIP)
+
+Q = (a -> Q) [] (a12 -> SKIP) [] (a13 -> Q)
+
+R = (a -> R) [] (a12 -> R) [] (a13 -> SKIP)
+
+QR = (Q [| syncset |] R)
+
+PQR = P [| syncset |] QR

@@ -1,0 +1,63 @@
+\documentclass{article}
+\usepackage{latexsym}
+\usepackage{amssymb,amsmath}
+
+\def\new{\mathop{\mathsf{new}}}
+\def\bar#1{\overline{#1}}
+\def\ang#1{\langle{#1}\rangle}
+
+\def\outp#1#2{\bar{#1}\ang{#2}}
+\def\inp#1#2{#1(#2)}
+\def\comp{\mathop{|}}
+\def\subst#1#2{\{{#1}/{#2}\}}
+
+\def\cong{\equiv}
+\def\trans{\rightarrow}
+
+\def\coz#1{\textrm{``~#1~''}}
+\def\cozm#1{\textrm{``~}#1\textrm{~''}}
+
+\begin{document}
+
+exercises from pi-calculus book by Robin Milner
+
+Exercise 9.19, p92
+
+
+\begin{eqnarray*}
+  && z \notin P'; z \in R; x \in P,Q.
+\\ \lefteqn{\new z (P \comp R) \comp Q}
+\\ &=& \cozm{p = \outp x z . P', Q = \inp x y.Q'}
+\\ && \new z (\outp x z . P' \comp R) \comp  \inp x y.Q'
+\\ &\cong& \coz{Cong(4), $z \notin Q'$}
+\\ && \new z ((\outp x z . P' \comp R) \comp  \inp x y.Q')
+\\ &\cong& \coz{Cong (3)}
+\\ && \new z (\inp x y.Q' \comp \outp x z . P') \comp R)
+\\ &\trans& \coz{REACT}
+\\ && \new z (\subst z y Q' \comp P') \comp R)
+\\ &\cong& \coz{Cong (3)}
+\\ && \new z (P' \comp (R \comp \subst z y Q'))
+\\ &\cong& \coz{Cong(4), $z \notin P'$}
+\\ && P' \comp \new z (R \comp \subst z y Q')
+\end{eqnarray*}
+
+Exercise 9.20, p93
+\begin{eqnarray*}
+  && z \notin P'; z \in R,Q; x \in P,Q.
+\\ \lefteqn{\new z (P \comp R) \comp Q}
+\\ &=& \cozm{p = \outp x z . P', Q = \inp x y.\outp z y}
+\\ && \new z (\outp x z . P' \comp R) \comp \inp x y.\outp z y
+\\ &\cong& \coz{Cong(1), $z \mapsto u$, $u$ is fresh}
+\\ && \new u (\outp x u . \subst u z P' \comp \subst u z R) \comp \inp x y.\outp z y
+\\ &=& \cozm{z \notin P'}
+\\ && \new u (\outp x u . P' \comp \subst u z R) \comp \inp x y.\outp z y
+\\ &\cong& \coz{Cong(3); Cong(4) $u \notin \inp x y.\outp z y$; Cong(3)}
+\\ && \new u ((\inp x y.\outp z y \comp \outp x u . P') \comp \subst u z R)
+\\ &\trans& \coz{REACT}
+\\ && \new u ((\outp z u \comp P') \comp \subst u z R)
+\\ &\cong& \coz{Cong(3)}
+\\ && \new u (P' \comp (\outp z u \comp \subst u z R))
+\\ &\cong& \coz{Cong(4) $u$ was fresh, so $u \notin P'$}
+\\ && P' \comp \new u (\outp z u \comp \subst u z R)
+\end{eqnarray*}
+\end{document}
